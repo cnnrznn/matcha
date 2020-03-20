@@ -1,14 +1,44 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="bundle.js"></script>
-        <link rel="stylesheet" href="style.css"> 
+        <link rel="stylesheet" href="style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
-        <div id="display"></div>
         <div id="controls">
-            <span id="incBtn"></span>
-            <span id="decBtn"></span>
+            <input id="incBtn" type="button" value="I drank matcha">
         </div>
+        <div id="display"></div>
+        <div id="log">
+        </div>
+
+        <script>
+            function incClick(e) {
+                console.log("clicked")
+                src = navigator.userAgent + '.' + navigator.appVersion
+                console.log(navigator.userAgent)
+                console.log(navigator.appVersion)
+                $.get("/inc", {'src': src}, (data, status) => {
+                    console.log(data)
+                    console.log(status)
+                    if (status != 'success') {
+                        console.log("Could not increment :(")
+                    }
+                    update()
+                })
+            }
+
+            function update() {
+                $.get("/get", (data, status) => {
+                    console.log(data)
+                    document.getElementById("display").innerHTML = JSON.parse(data).val
+                })
+            }
+
+            $(document).ready(() => {
+                update()
+                $("#incBtn").click(incClick)
+            })
+        </script>
     </body>
 </html>
